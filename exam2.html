@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function vara(arr) {
+            if (!arr.every(Number.isFinite)) {
+                return false;
+            }
+
+            let start = 0;
+            let end = arr.length - 1;
+
+            while (start < end) {
+                if (arr[start] !== arr[end]) {
+                    return false;
+                }
+                start++;
+                end--;
+            }
+
+            return true;
+        }
+
+        const arr1 = [1, 2, 3, 2, 1];
+        const arr2 = [1, 2, 3, 4, 5];
+        const arr3 = [9, 8, 8, 9];
+        const arr4 = [1, '2', 3, 2, 1];
+
+        console.log(vara(arr1));
+        console.log(vara(arr2));
+        console.log(vara(arr3));
+        console.log(vara(arr4));
+
+    </script>
+</body>
+
+</html>

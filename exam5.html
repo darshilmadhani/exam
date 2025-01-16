@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class Node {
+            constructor(data) {
+                this.data = data;
+                this.next = null;
+            }
+        }
+
+
+        class SinglyLinkedList {
+            constructor() {
+                this.head = null;
+            }
+
+            addElement(data) {
+                const newNode = new Node(data);
+                if (!this.head) {
+                    this.head = newNode;
+                } else {
+                    let current = this.head;
+                    while (current.next) {
+                        current = current.next;
+                    }
+                    current.next = newNode;
+                }
+            }
+
+            deleteNode(data) {
+                if (!this.head) {
+                    console.log("The list is empty.");
+                    return;
+                }
+
+                if (this.head.data === data) {
+                    this.head = this.head.next;
+                    return;
+                }
+
+                let current = this.head;
+                let previous = null;
+
+                while (current && current.data !== data) {
+                    previous = current;
+                    current = current.next;
+                }
+
+                if (!current) {
+                    console.log(`Node with data ${data} not found.`);
+                    return;
+                }
+
+                previous.next = current.next;
+            }
+
+            display() {
+                if (!this.head) {
+                    console.log("The list is empty.");
+                    return;
+                }
+
+                let current = this.head;
+                let result = "";
+                while (current) {
+                    result += current.data + " -> ";
+                    current = current.next;
+                }
+                result += "null";
+                console.log(result);
+            }
+        }
+
+        const linkedList = new SinglyLinkedList();
+        linkedList.addElement(10);
+        linkedList.addElement(20);
+        linkedList.addElement(30);
+        console.log("Linked List after adding elements:");
+        linkedList.display();
+
+        linkedList.deleteNode(20);
+        console.log("Linked List after deleting node with data 20:");
+        linkedList.display();
+
+        linkedList.deleteNode(50);
+
+    </script>
+</body>
+
+</html>
