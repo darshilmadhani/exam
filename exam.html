@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        #quiz,
+        #score-section {
+            text-align: center;
+        }
+
+        #options {
+            list-style: none;
+            padding: 0;
+        }
+
+        #options li {
+            background: #e4e4e4;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #options li:hover {
+            background: #d4d4d4;
+        }
+
+        button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #leaderboard ul {
+            list-style: none;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="quiz-container">
+        <div id="quiz">
+            <h2 id="question">Question will appear here</h2>
+            <ul id="options">
+                <!-- Options will be dynamically generated -->
+            </ul>
+            <button id="next-btn">Next</button>
+        </div>
+        <div id="score-section" class="hidden">
+            <h2>Your Score: <span id="score"></span></h2>
+            <button id="restart-btn">Restart</button>
+            <div id="leaderboard">
+                <h3>Leaderboard</h3>
+                <ul id="leaderboard-list">
+                    <!-- Leaderboard entries -->
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        const questions = [
+            {
+                question: "What is the capital of France?",
+                options: ["Berlin", "Madrid", "Paris", "Lisbon"],
+                answer: 2,
+            },
+            {
+                question: "Which language is used for web development?",
+                options: ["Python", "JavaScript", "C++", "Java"],
+                answer: 1,
+            },
+            {
+                question: "What is 2 + 2?",
+                options: ["3", "4", "5", "6"],
+                answer: 1,
+            },
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        const questionElement = document.getElementById("question");
+        const optionsElement = document.getElementById("options");
+        const nextButton = document.getElementById("next-btn");
+        const scoreSection = document.getElementById("score-section");
+        const scoreElement = document.getElementById("score");
+        const leaderboardList = document.getElementById("leaderboard-list");
+        const restartButton = document.getElementById("restart-btn");
+
+        function loadQuestion() {
+            const current = questions[currentQuestion];
+            questionElement.textContent = current.question;
+            optionsElement.innerHTML = "";
+
+            current.options.forEach((option, index) => {
+                const li = document.createElement("li");
+                li.textContent = option;
+                li.onclick = () => selectAnswer(index);
+                optionsElement.appendChild(li);
+            });
+        }
+
+        function selectAnswer(selected) {
+            const correct = questions[currentQuestion].answer;
+            if (selected === correct) {
+                score++;
+            }
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                displayScore();
+            }
+        }
+
+        function displayScore() {
+            document.getElementById("quiz").classList.add("hidden");
+            scoreSection.classList.remove("hidden");
+            scoreElement.textContent = score;
+
+            const username = prompt("Enter your name for the leaderboard:");
+            saveScore(username, score);
+            displayLeaderboard();
+        }
+
+        function saveScore(name, score) {
+            const leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+            leaderboard.push({ name, score });
+            leaderboard.sort((a, b) => b.score - a.score);
+            localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+        }
+
+        function displayLeaderboard() {
+            const leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+            leaderboardList.innerHTML = leaderboard
+                .slice(0, 5)
+                .map((entry) => `<li>${entry.name}: ${entry.score}</li>`)
+                .join("");
+        }
+
+        restartButton.addEventListener("click", () => {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById("quiz").classList.remove("hidden");
+            scoreSection.classList.add("hidden");
+            loadQuestion();
+        });
+
+        nextButton.addEventListener("click", () => {
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            }
+        });
+
+        // Initial load
+        loadQuestion();
+
+    </script>
+</body>
+
+</html>
